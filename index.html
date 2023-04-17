@@ -1,41 +1,20 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>This is an HTML canvas</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PacMan</title>
 </head>
-
 <body>
-    <h1>This is an HTML canvas</h1>
-    <canvas id="asteroids" width="400" height="400"></canvas>
-    <style media="screen">
-        body {
-            text-align: center;
-            font-family: sans-serif;
-        }
-
-        canvas {
-            background-color: black;
-        }
-    </style>
-
-    <script>
-        var canvas = document.getElementById("asteroids");
-        var context = canvas.getContext("2d");
-        context.strokeStyle = 'lightgrey';
-        context.fillStyle = 'dimgrey';
-        context.lineWidth = 5;
-        context.rect(75, 50, canvas.width - 150, canvas.height - 100);
-        context.stroke();
-        context.fill();
-        context.font = "34px Arial";
-        context.fillText("2D Drawing", 110, 100);
-        context.fillStyle('lightgrey');
-    // this is a comment, it has no effect!!!
-    </script>
-
-
-    </script>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <!-- <div style="display: block"> -->
+    <div style="display: none"></div>
+        <img id="animations" src="assets/animations.gif" alt="">
+        <img id="ghosts" src="assets/ghost.png" alt="">
+    </div>
+    <script src="ghost.js"></script>
+    <script src="pacman.js"></script>                       
+    <script src="game.js"></script>
 </body>
-
 </html>
