@@ -1,0 +1,15 @@
+#container {
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  position: relative;
+}
+
+.pacman {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: yellow;
+  border-radius: 50%;
+  transition: transform 0.2s ease-in-out;
+}
