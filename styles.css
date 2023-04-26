@@ -1,4 +1,4 @@
-#container {
+/* #container {
   width: 500px;
   height: 500px;
   border: 1px solid black;
@@ -12,4 +12,67 @@
   background-color: yellow;
   border-radius: 50%;
   transition: transform 0.2s ease-in-out;
+} */
+
+/* Styling grid */
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 560px;
+    height: 560px;
+    border: solid black;
 }
+  
+.grid div {
+    width: 20px;
+    height: 20px;
+}
+
+/* Styling pac */
+.pac-dot {
+    background-color: green;   
+    border: 5px solid white;
+    box-sizing: border-box;
+}
+
+/* Styling wall */
+.wall {
+    background-color: blue;
+}
+
+/* Styling power pallet */
+.power-pellet {
+    background-color: green;
+    border-radius: 10px;
+}
+
+/* Styling ghosts */
+
+.blinky {
+    background-color: red;
+}
+
+.pinky {
+    background-color: pink;
+}
+
+.inky {
+    background-color: cyan;
+}
+
+.clyde {
+    background-color: orange;     
+}
+
+.scared-ghost {
+    background-color: aquamarine;
+}
+
+/* Styling pac-man */
+
+.pac-man {
+    background-image: url(Pacman.svg);
+    /* background-color: yellow; */
+    border-radius: 10px;
+}
+
