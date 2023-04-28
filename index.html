@@ -5,25 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>PacMan</title>
+    <title>Document</title>
 </head>
 <body>
-    <!-- <canvas id="canvas" width="500" height="500"></canvas> -->
-    <!-- <div style="display: block"> -->
-    <!-- <div style="display: none"></div>
-        <img id="animations" src="assets/animations.gif" alt="">
-        <img id="ghosts" src="assets/ghost.png" alt="">
-    </div> -->
-
-    <!-- <div id="container"></div> -->
-    <div class="grid"></div>
-    <object data="pacman.svg" width="70" height="70"> </object>
-
-    <h3>Score:<span id="score"></span></h3>
-
-    <!-- <script src="ghost.js"></script>
-    <script src="pacman.js"></script>                       
-    <script src="game.js"></script> -->
+    <div>
+        <div class="startBtn">Start Game</div>
+        Score: <span class="score">0</span>
+        Lives: <span class="lives"></span>
+    </div>
+    <div class="container">
+        <div id="ball"></div>
+        <div class="paddle"></div>
+        <div class="gameover">Click Start Button</div>
+    </div>
     <script src="app.js"></script>
+    
 </body>
 </html>
