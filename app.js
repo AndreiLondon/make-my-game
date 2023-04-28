@@ -16,7 +16,7 @@ let lives = 3;
 let animationRepeat;
 
 //Ball direction - what direction the ball is moving, how many slots is moving and last one can be speed
-let ballDir = [5, 5, 5]
+let ballDir = [5, 5, 5];
 
 // 1st one We can set a horizontal x axes  
 // 2nd one vertucal y axes
@@ -45,9 +45,9 @@ document.addEventListener('keydown', function (e) {
     e.preventDefault();
     //checks the key
     //then user wants to go left
-    if (key === 37) paddle.left = true;
+    if (key === 37) paddle.left = false;
     //then user wants to go right
-    else if (key === 39) paddle.right = true;
+    else if (key === 39) paddle.right = false;
     //let key = event.key
     console.log(key)
 });
@@ -71,7 +71,9 @@ function startGame() {
     // console.log(paddle);
     // console.dir(paddle)
     let gameOver = false;
+    // to release the ball set true
     let gameInPlay = true;
+    //let gameInPlay = false;
     console.dir(paddle)
 };
 function update() {
@@ -87,8 +89,13 @@ function update() {
             pCurrent += 5;
         }
         paddle.style.left = pCurrent + 'px';
-        console.log(pCurrent);
-
+        // console.log(pCurrent);
+        //Moving a ball   
+        if (!gameInPlay) {
+            waitingOnPaddle();
+        } else {
+            ballMove();
+        }
         animationRepeat = requestAnimationFrame(update);
 
         /*
@@ -100,6 +107,25 @@ function update() {
 
 
     }
+
+}
+
+function waitingOnPaddle() {
+    //Move the ball
+    ball.style.top = (paddle.offsetTop - 22) + 'px';
+    ball.style.left = (paddle.offsetLeft + 70) + 'px';
+
+}
+
+function ballMove() {
+    // X - position (horizontal position)
+    let x = ball.offsetLeft;
+    // Y - position (vertical position)
+    let y = ball.offsetTop;
+    x++;
+    ball.style.top = y + 'px';
+    ball.style.left = x + 'px';
+
 
 }
 
