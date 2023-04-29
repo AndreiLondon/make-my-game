@@ -1,15 +1,15 @@
-const container = document.querySelector('.container');
+let container = document.querySelector('.container');
 //# for id
-const ball = document.querySelector('#ball');
-const paddle = document.querySelector('.paddle');
-const btn_start = document.querySelector('.startBtn');
+let ball = document.querySelector('#ball');
+let paddle = document.querySelector('.paddle');
+let btn_start = document.querySelector('.startBtn');
 
-const gameOver = false;
+let gameOver = false;
 
 //keep the ball in the game keep it on the paddle back and forth when I move it.
 //When I press the keyup it releases the ball.
-const gameInPlay = false;
-const score = 0;
+let gameInPlay = false;
+let score = 0;
 let lives = 3;
 
 //for animation
@@ -38,21 +38,21 @@ let containerDim = container.getBoundingClientRect();
 console.log(containerDim);
 
 btn_start.addEventListener('click', startGame);
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', function(e) {
     // when i press a key   
     let key = e.keyCode;
     //stops propagation
     e.preventDefault();
     //checks the key
     //then user wants to go left
-    if (key === 37) paddle.left = false;
+    if (key === 37) paddle.left = true;
     //then user wants to go right
-    else if (key === 39) paddle.right = false;
+    else if (key === 39) paddle.right = true;
     //let key = event.key
     console.log(key)
 });
 //to cancel it
-document.addEventListener('keyup', function (e) {
+document.addEventListener('keyup', function(e) {
     let key = e.keyCode;
     e.preventDefault();
     if (key === 37) paddle.left = false;
@@ -61,7 +61,7 @@ document.addEventListener('keyup', function (e) {
 });
 function startGame() {
     //to hide gameover when we start the game
-    document.querySelector('.gameover').style.display = 'none'
+    document.querySelector('.gameover').style.display = 'none';
     //ball should be visable
     ball.style.display = 'block';
     //this is going to tell the browser performing the animation. Keep looping through whatever function 
@@ -122,7 +122,16 @@ function ballMove() {
     let x = ball.offsetLeft;
     // Y - position (vertical position)
     let y = ball.offsetTop;
-    x++;
+//if(x > containerDim.width || x < 0) {
+if(x > containerDim.width-20 || x < 0) {
+    ballDir[0] *= -1;
+}
+if(y > containerDim.height-20 || y < 0) {
+    ballDir[1] *= -1;
+}
+    x += ballDir[0];
+    y += ballDir[1];
+    // x++;
     ball.style.top = y + 'px';
     ball.style.left = x + 'px';
 
