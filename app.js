@@ -129,13 +129,23 @@ if(x > containerDim.width-20 || x < 0) {
 if(y > containerDim.height-20 || y < 0) {
     ballDir[1] *= -1;
 }
+if(isCollide(ball,paddle)) {
+    //collision
+
+}
     x += ballDir[0];
     y += ballDir[1];
     // x++;
     ball.style.top = y + 'px';
     ball.style.left = x + 'px';
+}
 
+//Detect Collision
 
+function isCollide(a,b) {
+    let aRect = a.getBoundingClientRect();
+    let bRect = b.getBoundingClientRect();
+    console.log()
 }
 
 
