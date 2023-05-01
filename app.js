@@ -35,7 +35,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
  the top of the viewport to the top of the element.
  */
 let containerDim = container.getBoundingClientRect();
-console.log(containerDim);
+//console.log(containerDim);
 
 btn_start.addEventListener('click', startGame);
 document.addEventListener('keydown', function (e) {
@@ -48,6 +48,7 @@ document.addEventListener('keydown', function (e) {
     if (key === 37) paddle.left = true;
     //then user wants to go right
     else if (key === 39) paddle.right = true;
+    else if (key === 38 && !gameInPlay) gameInPlay = true;
     //let key = event.key
     console.log(key)
 });
@@ -127,6 +128,10 @@ function ballMove() {
         ballDir[0] *= -1;
     }
     if (y > (containerDim.height - 20) || y < 0) {
+        if (y > (containerDim.height - 20)){
+            fallOffTheEdge();
+            return;
+        };
         ballDir[1] *= -1;
     }
     //Collision checks if our 2 elements are colliding
@@ -164,6 +169,35 @@ function ballMove() {
     ball.style.top = y + 'px';
     ball.style.left = x + 'px';
 }
+
+//LifeUpdater
+
+function lifeUpdater() {
+    document.querySelector('.lives').innerHTML = lives;
+}
+
+function stopper() {
+    gameInPlay = false;
+    //ball sit on top of the paddle
+    ballDir[0-5];
+    waitingOnPaddle()
+
+    //cancel animation frame
+    window.cancelAnimationFrame(animationRepeat);
+
+}
+
+//FallOffTheEdge func
+/*
+Whe the ball has gone too far and it stops the ball for moving
+ */
+function fallOffTheEdge() {
+    //Loosing the live as well when the ball FallOffTheEdge
+    lives --; 
+    lifeUpdater()
+    stopper();
+}
+
 
 //Detect Collision
 /*Two different objects on the page and we want to know when element a (ball) 
