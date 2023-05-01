@@ -38,7 +38,7 @@ let containerDim = container.getBoundingClientRect();
 console.log(containerDim);
 
 btn_start.addEventListener('click', startGame);
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // when i press a key   
     let key = e.keyCode;
     //stops propagation
@@ -52,7 +52,7 @@ document.addEventListener('keydown', function(e) {
     console.log(key)
 });
 //to cancel it
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keyup', function (e) {
     let key = e.keyCode;
     e.preventDefault();
     if (key === 37) paddle.left = false;
@@ -70,9 +70,9 @@ function startGame() {
     animationRepeat = requestAnimationFrame(update);
     // console.log(paddle);
     // console.dir(paddle)
-    let gameOver = false;
+    gameOver = false;
     // to release the ball set true
-    let gameInPlay = true;
+    gameInPlay = true;
     //let gameInPlay = false;
     console.dir(paddle)
 };
@@ -122,17 +122,42 @@ function ballMove() {
     let x = ball.offsetLeft;
     // Y - position (vertical position)
     let y = ball.offsetTop;
-//if(x > containerDim.width || x < 0) {
-if(x > containerDim.width-20 || x < 0) {
-    ballDir[0] *= -1;
-}
-if(y > containerDim.height-20 || y < 0) {
-    ballDir[1] *= -1;
-}
-if(isCollide(ball,paddle)) {
-    //collision
+    //if(x > containerDim.width || x < 0) {
+    if (x > (containerDim.width - 20) || x < 0) {
+        ballDir[0] *= -1;
+    }
+    if (y > (containerDim.height - 20) || y < 0) {
+        ballDir[1] *= -1;
+    }
+    //Collision checks if our 2 elements are colliding
+    if (isCollide(ball, paddle)) {
+        //collision
+        // Callculation of collision x is where the ball is located and we also can find where the paddle is located
+        // dividing by 10 giving a spread between -9 to +9. Ideal for ball direction calculation (BallDir)
+        let nDir = ((x - paddle.offsetLeft) - (paddle.offsetWidth /2))
+        console.log(nDir);
+        ballDir[0] = nDir;
+        ballDir[1] *= -1;
+        console.log('HIT');
+    } else {
+        /*
+        Example
+    bottom: 679
+    height: 602
+    left: 81.1875
+    right: 668.78125
+    top: 77
+    width: 587.59375
+    x: 81.1875
+    y: 77
+    
+    How to calculate 
+    left top 00 corner was 81.1875 - horizontal X coordinates
+    far right top corner would have the same top position, has Y position
+    X position = 81.1875 + 587.59375 = 668.78125
+    */
 
-}
+    }
     x += ballDir[0];
     y += ballDir[1];
     // x++;
@@ -141,12 +166,22 @@ if(isCollide(ball,paddle)) {
 }
 
 //Detect Collision
+/*Two different objects on the page and we want to know when element a (ball) 
+travels over any other bounding box of the paddle b.
+So I abble to check if at any point of any coordinaties top lefthand side to bottom righthand side 
+so all 4 corners of that element whatever overlaping.
+*/
 
-function isCollide(a,b) {
+function isCollide(a, b) {
     let aRect = a.getBoundingClientRect();
     let bRect = b.getBoundingClientRect();
-    console.log()
+    console.log(aRect);
+    console.log(bRect);
+    console.log('********');
+    console.log(aRect.bottom < bRect.top || aRect.top > bRect.bottom || aRect.right < bRect.left || aRect.left > bRect.right);
 }
+
+
 
 
 
