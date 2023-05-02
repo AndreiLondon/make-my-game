@@ -4,7 +4,7 @@ let ball = document.querySelector('#ball');
 let paddle = document.querySelector('.paddle');
 let btn_start = document.querySelector('.startBtn');
 
-let gameOver = false;
+let gameOver = true;
 
 //keep the ball in the game keep it on the paddle back and forth when I move it.
 //When I press the keyup it releases the ball.
@@ -50,7 +50,7 @@ document.addEventListener('keydown', function (e) {
     else if (key === 39) paddle.right = true;
     else if (key === 38 && !gameInPlay) gameInPlay = true;
     //let key = event.key
-    console.log(key)
+    //console.log(key)
 });
 //to cancel it
 document.addEventListener('keyup', function (e) {
@@ -58,25 +58,58 @@ document.addEventListener('keyup', function (e) {
     e.preventDefault();
     if (key === 37) paddle.left = false;
     else if (key === 39) paddle.right = false;
-
 });
+
 function startGame() {
-    //to hide gameover when we start the game
-    document.querySelector('.gameover').style.display = 'none';
-    //ball should be visable
-    ball.style.display = 'block';
-    //this is going to tell the browser performing the animation. Keep looping through whatever function 
-    //we've got within the parameters here. Is goint to play out.
-    //Looping over the update and this is where we have actions in the game
-    animationRepeat = requestAnimationFrame(update);
-    // console.log(paddle);
-    // console.dir(paddle)
-    gameOver = false;
-    // to release the ball set true
-    gameInPlay = true;
-    //let gameInPlay = false;
-    console.dir(paddle)
+    if (gameOver) {
+        //to hide gameover when we start the game
+        document.querySelector('.gameover').style.display = 'none';
+        //ball should be visable
+        ball.style.display = 'block';
+        //this is going to tell the browser performing the animation. Keep looping through whatever function 
+        //we've got within the parameters here. Is goint to play out.
+        //Looping over the update and this is where we have actions in the game
+        lives = 3;
+        setupBricks(18);
+        lifeUpdater();
+        animationRepeat = requestAnimationFrame(update);
+        // console.log(paddle);
+        // console.dir(paddle)
+        gameOver = false;
+        // to release the ball set true
+        gameInPlay = false;
+        //let gameInPlay = false;
+        //console.dir(paddle)
+    }
 };
+
+function setupBricks(num) {
+    let row = {
+        x: ((containerDim % 100) / 2),
+        y: 50
+    };
+    for (let x = 0; x < num; x++) {
+        if (row.x > (containerDim.width - 100)) {
+            row.y += 70;
+            row.x = ((containerDim.width % 100) / 2);
+        }
+        brickMaker(row);
+        row.x += 100;
+    }
+}
+
+function brickMaker(row) {
+    let div = document.createElement('div');
+    div.setAttribute('class', 'brick');
+    div.style.backgroundColor = 'yellow';
+    let pointDiv = Math.ceil(Math.random() * 10) + 2;
+    div.dataset.points = pointDiv;
+    div.innerHTML = pointDiv;
+    div.style.left = row.x + 'px';
+    div.style.top = row.y + 'px';
+    container.appendChild(div);
+
+}
 function update() {
     //Animation
     //Check if the gameOver still false
@@ -128,7 +161,7 @@ function ballMove() {
         ballDir[0] *= -1;
     }
     if (y > (containerDim.height - 20) || y < 0) {
-        if (y > (containerDim.height - 20)){
+        if (y > (containerDim.height - 20)) {
             fallOffTheEdge();
             return;
         };
@@ -139,12 +172,11 @@ function ballMove() {
         //collision
         // Callculation of collision x is where the ball is located and we also can find where the paddle is located
         // dividing by 10 giving a spread between -9 to +9. Ideal for ball direction calculation (BallDir)
-        let nDir = ((x - paddle.offsetLeft) - (paddle.offsetWidth /2))
-        console.log(nDir);
+        let nDir = ((x - paddle.offsetLeft) - (paddle.offsetWidth / 2))/10;
+        //console.log(nDir);
         ballDir[0] = nDir;
         ballDir[1] *= -1;
         console.log('HIT');
-    } else {
         /*
         Example
     bottom: 679
@@ -179,7 +211,7 @@ function lifeUpdater() {
 function stopper() {
     gameInPlay = false;
     //ball sit on top of the paddle
-    ballDir[0-5];
+    ballDir[0 - 5];
     waitingOnPaddle()
 
     //cancel animation frame
@@ -193,7 +225,7 @@ Whe the ball has gone too far and it stops the ball for moving
  */
 function fallOffTheEdge() {
     //Loosing the live as well when the ball FallOffTheEdge
-    lives --; 
+    lives--;
     lifeUpdater()
     stopper();
 }
