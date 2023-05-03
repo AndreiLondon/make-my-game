@@ -3,21 +3,16 @@ let container = document.querySelector('.container');
 let ball = document.querySelector('#ball');
 let paddle = document.querySelector('.paddle');
 let btn_start = document.querySelector('.startBtn');
-
 let gameOver = true;
-
 //keep the ball in the game keep it on the paddle back and forth when I move it.
 //When I press the keyup it releases the ball.
 let gameInPlay = false;
 let score = 0;
 let lives = 3;
-
 //for animation
 let animationRepeat;
-
 //Ball direction - what direction the ball is moving, how many slots is moving and last one can be speed
-let ballDir = [5, 5, 5];
-
+let ballDir = [6, 6, 5];
 // 1st one We can set a horizontal x axes  
 // 2nd one vertucal y axes
 // and we can ajust those numbers with js
@@ -61,6 +56,7 @@ document.addEventListener('keyup', function (e) {
 });
 
 function startGame() {
+    //check if the game is over
     if (gameOver) {
         //to hide gameover when we start the game
         document.querySelector('.gameover').style.display = 'none';
@@ -69,8 +65,9 @@ function startGame() {
         //this is going to tell the browser performing the animation. Keep looping through whatever function 
         //we've got within the parameters here. Is goint to play out.
         //Looping over the update and this is where we have actions in the game
-        lives = 3;
-        setupBricks(18);
+        lives = 1;
+        setupBricks(24);
+        //updates HTML
         lifeUpdater();
         animationRepeat = requestAnimationFrame(update);
         // console.log(paddle);
@@ -85,7 +82,7 @@ function startGame() {
 
 function setupBricks(num) {
     let row = {
-        x: ((containerDim % 100) / 2),
+        x: ((containerDim.width % 100) / 2),
         y: 50
     };
     for (let x = 0; x < num; x++) {
@@ -101,15 +98,32 @@ function setupBricks(num) {
 function brickMaker(row) {
     let div = document.createElement('div');
     div.setAttribute('class', 'brick');
-    div.style.backgroundColor = 'yellow';
+    //div.style.backgroundColor = randomColor();
+    div.style.background = 'linear-gradient('+randomColor()+','+randomColor()+')';
     let pointDiv = Math.ceil(Math.random() * 10) + 2;
     div.dataset.points = pointDiv;
     div.innerHTML = pointDiv;
     div.style.left = row.x + 'px';
     div.style.top = row.y + 'px';
     container.appendChild(div);
+};
 
+function randomColor() {
+    function c() {
+        //from 0 -255, based 16(hex)
+        //returns string representaion of the number
+        let hex = Math.floor(Math.random() * 256).toString(16);
+        //we need to return at least 2 characters
+        //substring returns the characters with the beginning characters(2 char in this case)
+        // if 0 + 1(hex) character it returns 0 and 1. if 2 chara so it retruns 2
+        //let response = ('0' + String(hex)).substr(-2);
+        let response = ('0' + String(hex)).substring(-2);
+        return response;
+        //return hex; 
+    }
+    return '#' + c() + c() + c();
 }
+
 function update() {
     //Animation
     //Check if the gameOver still false
@@ -172,11 +186,11 @@ function ballMove() {
         //collision
         // Callculation of collision x is where the ball is located and we also can find where the paddle is located
         // dividing by 10 giving a spread between -9 to +9. Ideal for ball direction calculation (BallDir)
-        let nDir = ((x - paddle.offsetLeft) - (paddle.offsetWidth / 2))/10;
+        let nDir = ((x - paddle.offsetLeft) - (paddle.offsetWidth / 2)) / 10;
         //console.log(nDir);
         ballDir[0] = nDir;
         ballDir[1] *= -1;
-        console.log('HIT');
+        //console.log('HIT');
         /*
         Example
     bottom: 679
@@ -193,8 +207,29 @@ function ballMove() {
     far right top corner would have the same top position, has Y position
     X position = 81.1875 + 587.59375 = 668.78125
     */
-
+        //Collision detection to see if the ball is colliding with any of those bricks
+        //the ideal place is where the ball is moving
     }
+    //grab all brick ellements
+    let tempBricks = document.querySelectorAll('.brick');
+    //
+    if (tempBricks.length == 0) {
+        stopper();
+        setupBricks(20);
+    }
+    for (let tarBrick of tempBricks) {
+        //collision detection
+        if (isCollide(tarBrick, ball)) {
+            //if it is a collision 
+            //first of all we need to change the direction of the ball
+            ballDir[1] *= -1;
+            //remove the brick from the screen
+            tarBrick.parentNode.removeChild(tarBrick);
+            //it removes the brick and updates the score
+            scoreUpdater(tarBrick.dataset.points);
+        }
+    }
+    //0 horizontal position, 1 vertical
     x += ballDir[0];
     y += ballDir[1];
     // x++;
@@ -205,7 +240,12 @@ function ballMove() {
 //LifeUpdater
 
 function lifeUpdater() {
-    document.querySelector('.lives').innerHTML = lives;
+    document.querySelector('.lives').innerText = lives;
+}
+
+function scoreUpdater(num) {
+    score += parseInt(num);
+    document.querySelector('.score').innerText = score;
 }
 
 function stopper() {
@@ -218,7 +258,17 @@ function stopper() {
     window.cancelAnimationFrame(animationRepeat);
 
 }
-
+function endGame() {
+    //to hide gameover when we start the game
+    document.querySelector('.gameover').style.display = 'block';
+    document.querySelector('.gameover').innerHTML = 'GAME OVER<br>Your Score ' + score;
+    gameOver = true;
+    ball.style.display = 'none';
+    let tempBricks = document.querySelectorAll('.brick');
+    for (let tarBrick of tempBricks) {
+        tarBrick.parentNode.removeChild(tarBrick);
+    }
+}
 //FallOffTheEdge func
 /*
 Whe the ball has gone too far and it stops the ball for moving
@@ -226,6 +276,10 @@ Whe the ball has gone too far and it stops the ball for moving
 function fallOffTheEdge() {
     //Loosing the live as well when the ball FallOffTheEdge
     lives--;
+    if (lives < 0) {
+        endGame();
+        lives = 0;
+    }
     lifeUpdater()
     stopper();
 }
@@ -241,11 +295,13 @@ so all 4 corners of that element whatever overlaping.
 function isCollide(a, b) {
     let aRect = a.getBoundingClientRect();
     let bRect = b.getBoundingClientRect();
-    console.log(aRect);
-    console.log(bRect);
-    console.log('********');
-    console.log(aRect.bottom < bRect.top || aRect.top > bRect.bottom || aRect.right < bRect.left || aRect.left > bRect.right);
+    // console.log(aRect);
+    // console.log(bRect);
+    // console.log('********');
+    //console.log(aRect.bottom < bRect.top || aRect.top > bRect.bottom || aRect.right < bRect.left || aRect.left > bRect.right);
+    return (!(aRect.bottom < bRect.top || aRect.top > bRect.bottom || aRect.right < bRect.left || aRect.left > bRect.right));
 }
+
 
 
 
