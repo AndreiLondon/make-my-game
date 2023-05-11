@@ -3,19 +3,39 @@ let container = document.querySelector('.container');
 let ball = document.querySelector('#ball');
 let paddle = document.querySelector('.paddle');
 let btn_start = document.querySelector('.startBtn');
+let btn_pause = document.querySelector('.pauseBtn');
+let btn_restart = document.querySelector('.restartBtn');
 let gameOver = true;
 //keep the ball in the game keep it on the paddle back and forth when I move it.
 //When I press the keyup it releases the ball.
 let gameInPlay = false;
+let isPaused = false;
 let score = 0;
 let lives = 3;
 //for animation
 let animationRepeat;
 //Ball direction - what direction the ball is moving, how many slots is moving and last one can be speed
-let ballDir = [6, 6, 5];
+let ballDir = [5, 5, 5];
 // 1st one We can set a horizontal x axes  
 // 2nd one vertucal y axes
 // and we can ajust those numbers with js
+
+//Timer
+
+let time = 0; // initialize time variable
+
+let timerHTML = document.querySelector('.timer');
+
+// update time every second
+let timer = setInterval(function() {
+    time++; // increment time by 1 second
+    // update the time display in the HTML
+timerHTML = document.querySelector('.timer').innerHTML = "Time: " + time + "s";
+}, 1000); // run every 1000ms (1 second)
+
+// stop the timer
+clearInterval(timer);
+
 
 //container dimensions 
 /*
@@ -36,6 +56,7 @@ btn_start.addEventListener('click', startGame);
 document.addEventListener('keydown', function (e) {
     // when i press a key   
     let key = e.keyCode;
+    //instead of using key being pressed I use e.preventDefault, this will cancel any events, so stop propagation of any events
     //stops propagation
     e.preventDefault();
     //checks the key
@@ -55,6 +76,19 @@ document.addEventListener('keyup', function (e) {
     else if (key === 39) paddle.right = false;
 });
 
+//Pause the game
+btn_start.addEventListener('click', pauseGame);
+document.addEventListener('keydown', function (e) {
+    // when i press a key   
+    let key = e.keyCode;
+    //stops propagation
+    e.preventDefault();
+    //checks the key 32 - spacebar
+    if (key === 32) {
+        isPaused = !isPaused;
+    }
+});
+
 function startGame() {
     //check if the game is over
     if (gameOver) {
@@ -65,7 +99,7 @@ function startGame() {
         //this is going to tell the browser performing the animation. Keep looping through whatever function 
         //we've got within the parameters here. Is goint to play out.
         //Looping over the update and this is where we have actions in the game
-        lives = 1;
+        lives = 1000;
         setupBricks(24);
         //updates HTML
         lifeUpdater();
@@ -79,6 +113,22 @@ function startGame() {
         //console.dir(paddle)
     }
 };
+function pauseGame() {
+    // animationRepeat = requestAnimationFrame();
+    // return;
+    isPaused = true;
+};
+
+// Restart Button
+
+btn_restart = document.querySelector('.restartBtn');
+restartButton.addEventListener("click", function() {
+    resetGame();
+});
+
+function resetGame() {
+    // Code to reset the game goes here
+}
 
 function setupBricks(num) {
     let row = {
@@ -116,26 +166,34 @@ function randomColor() {
         //we need to return at least 2 characters
         //substring returns the characters with the beginning characters(2 char in this case)
         // if 0 + 1(hex) character it returns 0 and 1. if 2 chara so it retruns 2
+        let response = ('0' + String(hex)).substr(-2);
         //let response = ('0' + String(hex)).substr(-2);
-        let response = ('0' + String(hex)).substring(-2);
         return response;
         //return hex; 
     }
     return '#' + c() + c() + c();
 }
-
 function update() {
     //Animation
     //Check if the gameOver still false
+    if(isPaused){
+        requestAnimationFrame(update)
+        return;
+    }
     if (gameOver === false) {
         //if it is so we can put the game and play
         let pCurrent = paddle.offsetLeft;
         //lets check paddle is exist
+        //pCurrent is > than 0 and if it's less than 0 we're unable to move thuther
         if (paddle.left && pCurrent > 0) {
-            pCurrent -= 5;
+            //adding 10 px left
+            pCurrent -= 10;
+            //offsetWidth getting a width of the paddle = 150 px CSS settings
         } else if (paddle.right && pCurrent < (containerDim.width - paddle.offsetWidth)) {
-            pCurrent += 5;
+            //adding 10 px right
+            pCurrent += 10;
         }
+        //'px' here to identify the pixel
         paddle.style.left = pCurrent + 'px';
         // console.log(pCurrent);
         //Moving a ball   
@@ -144,7 +202,8 @@ function update() {
         } else {
             ballMove();
         }
-        animationRepeat = requestAnimationFrame(update);
+        //animationRepeat = requestAnimationFrame(update);
+        requestAnimationFrame(update)
 
         /*
         offsetLeft is a property of DOM elements in JavaScript that represents the distance, 
@@ -152,16 +211,13 @@ function update() {
         ancestor element.
          */
         // console.log(pCurrent);
-
-
     }
-
 }
-
 function waitingOnPaddle() {
     //Move the ball
-    ball.style.top = (paddle.offsetTop - 22) + 'px';
-    ball.style.left = (paddle.offsetLeft + 70) + 'px';
+    //Hight left top width
+    ball.style.top = (paddle.offsetTop - 20) + 'px';
+    ball.style.left = (paddle.offsetLeft + 67) + 'px';
 
 }
 
@@ -171,6 +227,7 @@ function ballMove() {
     // Y - position (vertical position)
     let y = ball.offsetTop;
     //if(x > containerDim.width || x < 0) {
+        //make sure that the ball not running off the screan
     if (x > (containerDim.width - 20) || x < 0) {
         ballDir[0] *= -1;
     }
@@ -302,6 +359,8 @@ function isCollide(a, b) {
     return (!(aRect.bottom < bRect.top || aRect.top > bRect.bottom || aRect.right < bRect.left || aRect.left > bRect.right));
 }
 
+
+//Make a pause and restart button
 
 
 
